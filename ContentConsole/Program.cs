@@ -1,40 +1,26 @@
-﻿using System;
+﻿using Services.Services.Implementations;
+using Services.Services.Interfaces;
+using System;
+
+using System.Collections.Generic;
 
 namespace ContentConsole
 {
     public static class Program
     {
+        //private IBannedWordService _bannedWordService = new BannedWordService();
+
         public static void Main(string[] args)
         {
-            string bannedWord1 = "swine";
-            string bannedWord2 = "bad";
-            string bannedWord3 = "nasty";
-            string bannedWord4 = "horrible";
+            string content = "The weather in Manchester in winter is bad. It rains all the time - it must be horrible for people visiting.";
 
-            string content =
-                "The weather in Manchester in winter is bad. It rains all the time - it must be horrible for people visiting.";
+            IBannedWordService _bannedWordService = new BannedWordService();
 
-            int badWords = 0;
-            if (content.Contains(bannedWord1))
-            {
-                badWords = badWords + 1;
-            }
-            if (content.Contains(bannedWord2))
-            {
-                badWords = badWords + 1;
-            }
-            if (content.Contains(bannedWord3))
-            {
-                badWords = badWords + 1;
-            }
-            if (content.Contains(bannedWord4))
-            {
-                badWords = badWords + 1;
-            }
+            int bannedWords = _bannedWordService.GetBannedWordsCount(content);
 
             Console.WriteLine("Scanned the text:");
             Console.WriteLine(content);
-            Console.WriteLine("Total Number of negative words: " + badWords);
+            Console.WriteLine("Total Number of negative words: " + bannedWords);
 
             Console.WriteLine("Press ANY key to exit.");
             Console.ReadKey();
