@@ -2,82 +2,123 @@
 using Services.Services.Implementations;
 using Services.Services.Interfaces;
 using System;
+using System.Collections.Generic;
+using DAL.Repositories.Interfaces;
+using Moq;
+using DAL.UoW;
 
 namespace ContentConsole.Test.Unit.Tests
 {
     [TestFixture]
     public class BannedWordServiceTest
     {
-        private const string CONTENT = "The weather in Manchester in winter is bad. It rains all the time - it must be horrible for people visiting.";
-        private const string FILTERED_CONTENT = "The weather in Manchester in winter is b#d. It rains all the time - it must be h######e for people visiting.";
-        private const int BAD_WORDS_COUNT_BY_DEFAULT = 2;
-        private const int BAD_WORDS_COUNT_WITH_FILE_SETTING = 3;
+        private const string Content = "The weather in Manchester in winter is bad. It rains all the time - it must be horrible for people visiting.";
+        private const string FilteredContent = "The weather in Manchester in winter is b#d. It rains all the time - it must be h######e for people visiting.";
+        private const int BadWordsCountByDefault = 2;
+
+        private readonly Dictionary<string, string> _bannedWords = new Dictionary<string, string>
+        {
+            {"swine", "s###e"},
+            {"bad", "b#d"},
+            {"nasty", "n###y"},
+            {"horrible", "h######e"}
+        };
 
         [Test]
-        public void BannedWordService_GetBannedWordsCount_Test()
+        public void BannedWordService_GetBannedWordsCount_ReturnsCorrectCount()
         {
             //Arrange
-            IBannedWordService service = new BannedWordService();
+            var repositoryMock = new Mock<IBannedWordRepository>();
+            repositoryMock.Setup(r => r.GetBannedWords()).Returns(_bannedWords);
+
+            var uowMock = new Mock<IUnitOfWork>();
+            uowMock.Setup(w => w.BannedWords()).Returns(repositoryMock.Object);
+
+            IBannedWordService service = new BannedWordService(uowMock.Object);
 
             //Act
-            int bannedWordsCount = service.GetBannedWordsCount();
+            var bannedWordsCount = service.GetBannedWordsCount();
 
             //Assert
-            Assert.AreEqual(BAD_WORDS_COUNT_BY_DEFAULT, bannedWordsCount);
+            Assert.AreEqual(BadWordsCountByDefault, bannedWordsCount);
         }
 
         [Test]
-        public void BannedWordService_SetBannedWordsFromFile_Test()
+        public void BannedWordService_SetBannedWordsFromFile_ReturnsBadWordsCountWithWordsFromFile()
         {
             //Arrange
-            IBannedWordService service = new BannedWordService();
-            string path = $"{AppDomain.CurrentDomain.BaseDirectory}words.txt";
+            var repositoryMock = new Mock<IBannedWordRepository>();
+            repositoryMock.Setup(r => r.GetBannedWords()).Returns(_bannedWords);
+
+            var uowMock = new Mock<IUnitOfWork>();
+            uowMock.Setup(w => w.BannedWords()).Returns(repositoryMock.Object);
+
+            IBannedWordService service = new BannedWordService(uowMock.Object);
+            var path = $"{AppDomain.CurrentDomain.BaseDirectory}words.txt";
             service.SetBannedWordsFromFile(path);
 
             //Act
-            int bannedWordsCount = service.GetBannedWordsCount();
+            service.GetBannedWordsCount();
 
             //Assert
-            Assert.AreEqual(BAD_WORDS_COUNT_WITH_FILE_SETTING, bannedWordsCount);
+            repositoryMock.Verify(m => m.AddBannedWord(It.IsAny<string>()), Times.Exactly(2));
         }
 
         [Test]
-        public void BannedWordService_FilterBannedWords_Test()
+        public void BannedWordService_FilterBannedWords_ReturnsFilteredContent()
         {
             //Arrange
-            IBannedWordService service = new BannedWordService();
+            var repositoryMock = new Mock<IBannedWordRepository>();
+            repositoryMock.Setup(r => r.GetBannedWords()).Returns(_bannedWords);
+
+            var uowMock = new Mock<IUnitOfWork>();
+            uowMock.Setup(w => w.BannedWords()).Returns(repositoryMock.Object);
+
+            IBannedWordService service = new BannedWordService(uowMock.Object);
 
             //Act
-            string filteredContent = service.FilterBannedWords(CONTENT);
+            var filteredContent = service.FilterBannedWords(Content);
 
             //Assert
-            Assert.AreEqual(FILTERED_CONTENT, filteredContent);
+            Assert.AreEqual(FilteredContent, filteredContent);
         }
 
         [Test]
-        public void BannedWordService_ScanContent_WhithFiltration_Test()
+        public void BannedWordService_ScanContent_WhithFiltration_ReturnsFilteredContent()
         {
             //Arrange
-            IBannedWordService service = new BannedWordService();
+            var repositoryMock = new Mock<IBannedWordRepository>();
+            repositoryMock.Setup(r => r.GetBannedWords()).Returns(_bannedWords);
+
+            var uowMock = new Mock<IUnitOfWork>();
+            uowMock.Setup(w => w.BannedWords()).Returns(repositoryMock.Object);
+
+            IBannedWordService service = new BannedWordService(uowMock.Object);
 
             //Act
-            string scannedText = service.ScanContent();
+            var scannedText = service.ScanContent();
 
             //Assert
-            Assert.AreEqual(FILTERED_CONTENT, scannedText);
+            Assert.AreEqual(FilteredContent, scannedText);
         }
 
         [Test]
-        public void BannedWordService_ScanContent_WhithoutFiltration_Test()
+        public void BannedWordService_ScanContent_WhithoutFiltration_ReturnsNotFilteredContent()
         {
             //Arrange
-            IBannedWordService service = new BannedWordService();
+            var repositoryMock = new Mock<IBannedWordRepository>();
+            repositoryMock.Setup(r => r.GetBannedWords()).Returns(_bannedWords);
+
+            var uowMock = new Mock<IUnitOfWork>();
+            uowMock.Setup(w => w.BannedWords()).Returns(repositoryMock.Object);
+
+            IBannedWordService service = new BannedWordService(uowMock.Object);
 
             //Act
-            string scannedText = service.ScanContent(false);
+            var scannedText = service.ScanContent(false);
 
             //Assert
-            Assert.AreEqual(CONTENT, scannedText);
+            Assert.AreEqual(Content, scannedText);
         }
     }
 }

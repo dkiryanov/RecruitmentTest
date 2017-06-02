@@ -1,5 +1,6 @@
 ﻿using ContentStorage.Storage;
 using System.Collections.Generic;
+using DAL.Repositories.Interfaces;
 
 namespace DAL.Repositories.Implementations
 {

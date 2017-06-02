@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DAL.Repositories
+namespace DAL.Repositories.Interfaces
 {
     public interface IBannedWordRepository
     {

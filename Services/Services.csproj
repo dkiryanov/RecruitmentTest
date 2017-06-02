@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Implementations\BannedWordService.cs" />
+    <Compile Include="Services\Implementations\SetBannedWordsResult.cs" />
     <Compile Include="Services\Interfaces\IBannedWordService.cs" />
   </ItemGroup>
   <ItemGroup>

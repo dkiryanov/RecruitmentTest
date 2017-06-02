@@ -1,14 +1,19 @@
-﻿using ContentStorage.Storage;
-using DAL.Repositories;
-using DAL.Repositories.Implementations;
-using System;
+﻿using DAL.Repositories.Interfaces;
 
 namespace DAL.UoW
 {
-    public sealed class UnitOfWork
+    public sealed class UnitOfWork : IUnitOfWork
     {
-        private IBannedWordRepository _bannedWordRepository;
+        private readonly IBannedWordRepository _bannedWordRepository;
 
-        public IBannedWordRepository BannedWords => _bannedWordRepository ?? (_bannedWordRepository = new BannedWordRepository());
+        public UnitOfWork(IBannedWordRepository bannedWordRepository)
+        {
+            _bannedWordRepository = bannedWordRepository;
+        }
+
+        public IBannedWordRepository BannedWords()
+        {
+            return _bannedWordRepository;
+        }
     }
 }
