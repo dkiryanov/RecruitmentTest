@@ -2,8 +2,6 @@
 using Services.Services.Interfaces;
 using System;
 
-using System.Collections.Generic;
-
 namespace ContentConsole
 {
     public static class Program
@@ -12,9 +10,14 @@ namespace ContentConsole
 
         public static void Main(string[] args)
         {
-            string content = "The weather in Manchester in winter is bad. It rains all the time - it must be horrible for people visiting.";
-
             IBannedWordService _bannedWordService = new BannedWordService();
+
+            Console.WriteLine("Input a path to file with bad words and press 'ENTER'");
+            string pathToFile = Console.ReadLine();
+            _bannedWordService.SetBannedWordsFromFile(pathToFile);
+
+
+            string content = "The weather in Manchester in winter is bad. It rains all the time - it must be horrible for people visiting.";
 
             int bannedWords = _bannedWordService.GetBannedWordsCount(content);
 

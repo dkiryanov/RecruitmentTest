@@ -1,29 +1,60 @@
 ﻿using DAL.UoW;
 using Services.Services.Interfaces;
+using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Services.Services.Implementations
 {
     public sealed class BannedWordService : IBannedWordService
     {
-        public int GetBannedWordsCount(string content)
+        private readonly UnitOfWork _uow;
+
+        public BannedWordService()
         {
-            using(UnitOfWork uow = new UnitOfWork())
+            _uow = new UnitOfWork();
+        }
+
+        public void SetBannedWordsFromFile(string pathToFile)
+        {
+            if (string.IsNullOrEmpty(pathToFile))
             {
-                HashSet<string> bannedWords = uow.BannedWords.GetBannedWords();
+                return;
+            }
 
-                int badWords = 0;
-
-                foreach (string word in bannedWords)
+            try
+            { 
+                using(StreamReader sr = new StreamReader(pathToFile))
                 {
-                    if (content.ToLower().Contains(word))
+                    string[] bannedWords = sr.ReadToEnd().ToLower().Split(',');
+
+                    foreach (string word in bannedWords)
                     {
-                        badWords++;
+                        _uow.BannedWords.AddBannedWord(word);
                     }
                 }
-
-                return badWords;
             }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public int GetBannedWordsCount(string content)
+        {
+            HashSet<string> bannedWords = _uow.BannedWords.GetBannedWords();
+
+            int badWords = 0;
+
+            foreach (string word in bannedWords)
+            {
+                if (content.ToLower().Contains(word))
+                {
+                    badWords++;
+                }
+            }
+
+            return badWords;
         }
     }
 }

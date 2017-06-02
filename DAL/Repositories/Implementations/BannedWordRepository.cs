@@ -5,26 +5,19 @@ namespace DAL.Repositories.Implementations
 {
     public class BannedWordRepository : IBannedWordRepository
     {
-        private readonly IWordStorage _storage;
-
-        public BannedWordRepository(IWordStorage storage)
-        {
-            _storage = storage;
-        }
-
         public bool AddBannedWord(string word)
         {
-            return _storage.AddWord(word);
+            return WordStorage.AddWord(word);
         }
 
         public bool DeleteBannedWord(string word)
         {
-            return _storage.DeleteWord(word);
+            return WordStorage.DeleteWord(word);
         }
 
         public HashSet<string> GetBannedWords()
         {
-            return _storage.GetWords();
+            return WordStorage.GetWords();
         }
     }
 }
