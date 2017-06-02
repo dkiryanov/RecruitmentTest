@@ -18,11 +18,15 @@ namespace ContentConsole
 
 
             string content = "The weather in Manchester in winter is bad. It rains all the time - it must be horrible for people visiting.";
-
+            
             int bannedWords = _bannedWordService.GetBannedWordsCount(content);
 
             Console.WriteLine("Scanned the text:");
             Console.WriteLine(content);
+
+            string filteredContent = _bannedWordService.FilterBannedWords(content);
+            Console.WriteLine(filteredContent);
+
             Console.WriteLine("Total Number of negative words: " + bannedWords);
 
             Console.WriteLine("Press ANY key to exit.");

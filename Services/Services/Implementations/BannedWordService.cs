@@ -3,6 +3,7 @@ using Services.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace Services.Services.Implementations
 {
@@ -42,19 +43,33 @@ namespace Services.Services.Implementations
 
         public int GetBannedWordsCount(string content)
         {
-            HashSet<string> bannedWords = _uow.BannedWords.GetBannedWords();
+            Dictionary<string, string> bannedWords = _uow.BannedWords.GetBannedWords();
 
             int badWords = 0;
 
-            foreach (string word in bannedWords)
+            foreach (KeyValuePair<string, string> word in bannedWords)
             {
-                if (content.ToLower().Contains(word))
+                if (content.ToLower().Contains(word.Key))
                 {
                     badWords++;
                 }
             }
 
             return badWords;
+        }
+
+        public string FilterBannedWords(string content)
+        {
+            Dictionary<string, string> bannedWords = _uow.BannedWords.GetBannedWords();
+
+            StringBuilder builder = new StringBuilder(content);
+
+            foreach(KeyValuePair<string, string> word in bannedWords)
+            {
+                builder.Replace(word.Key, word.Value);
+            }
+
+            return builder.ToString();
         }
     }
 }

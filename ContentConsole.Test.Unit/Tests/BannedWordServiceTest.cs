@@ -9,6 +9,7 @@ namespace ContentConsole.Test.Unit.Tests
     public class BannedWordServiceTest
     {
         private const string CONTENT = "The weather in Manchester in winter is bad. It rains all the time - it must be horrible for people visiting.";
+        private const string FILTERED_CONTENT = "The weather in Manchester in winter is b#d. It rains all the time - it must be h######e for people visiting.";
         private const int BAD_WORDS_COUNT_BY_DEFAULT = 2;
         private const int BAD_WORDS_COUNT_WITH_FILE_SETTING = 3;
 
@@ -38,6 +39,19 @@ namespace ContentConsole.Test.Unit.Tests
 
             //Assert
             Assert.AreEqual(BAD_WORDS_COUNT_WITH_FILE_SETTING, bannedWordsCount);
+        }
+
+        [Test]
+        public void BannedWordService_FilterBannedWords_Test()
+        {
+            //Arrange
+            IBannedWordService service = new BannedWordService();
+
+            //Act
+            string filteredContent = service.FilterBannedWords(CONTENT);
+
+            //Assert
+            Assert.AreEqual(FILTERED_CONTENT, filteredContent);
         }
     }
 }

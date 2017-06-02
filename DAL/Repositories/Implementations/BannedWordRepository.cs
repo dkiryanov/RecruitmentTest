@@ -5,17 +5,17 @@ namespace DAL.Repositories.Implementations
 {
     public class BannedWordRepository : IBannedWordRepository
     {
-        public bool AddBannedWord(string word)
+        public void AddBannedWord(string word)
         {
-            return WordStorage.AddWord(word);
+            WordStorage.AddWord(word);
         }
 
-        public bool DeleteBannedWord(string word)
+        public void DeleteBannedWord(string word)
         {
-            return WordStorage.DeleteWord(word);
+            WordStorage.DeleteWord(word);
         }
 
-        public HashSet<string> GetBannedWords()
+        public Dictionary<string, string> GetBannedWords()
         {
             return WordStorage.GetWords();
         }

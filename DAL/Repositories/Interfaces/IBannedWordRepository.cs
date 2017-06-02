@@ -4,8 +4,8 @@ namespace DAL.Repositories
 {
     public interface IBannedWordRepository
     {
-        HashSet<string> GetBannedWords();
-        bool AddBannedWord(string word);
-        bool DeleteBannedWord(string word);
+        Dictionary<string, string> GetBannedWords();
+        void AddBannedWord(string word);
+        void DeleteBannedWord(string word);
     }
 }
