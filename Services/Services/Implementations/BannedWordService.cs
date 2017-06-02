@@ -9,8 +9,9 @@ namespace Services.Services.Implementations
 {
     public sealed class BannedWordService : IBannedWordService
     {
+        private const string CONTENT = "The weather in Manchester in winter is bad. It rains all the time - it must be horrible for people visiting.";
         private readonly UnitOfWork _uow;
-
+        
         public BannedWordService()
         {
             _uow = new UnitOfWork();
@@ -41,8 +42,10 @@ namespace Services.Services.Implementations
             }
         }
 
-        public int GetBannedWordsCount(string content)
+        public int GetBannedWordsCount()
         {
+            string content = GetScannedText();
+
             Dictionary<string, string> bannedWords = _uow.BannedWords.GetBannedWords();
 
             int badWords = 0;
@@ -70,6 +73,26 @@ namespace Services.Services.Implementations
             }
 
             return builder.ToString();
+        }
+
+        public string ScanContent(bool withFiltration = true)
+        {
+            string content = GetScannedText();
+
+            if (!withFiltration)
+            {
+                return content;
+            }
+
+            return FilterBannedWords(content);
+        }
+
+        /// <summary>
+        /// This method immitates a text scanning process.
+        /// </summary>
+        private string GetScannedText()
+        {
+            return CONTENT;
         }
     }
 }

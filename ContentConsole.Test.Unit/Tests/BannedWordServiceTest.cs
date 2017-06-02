@@ -20,7 +20,7 @@ namespace ContentConsole.Test.Unit.Tests
             IBannedWordService service = new BannedWordService();
 
             //Act
-            int bannedWordsCount = service.GetBannedWordsCount(CONTENT);
+            int bannedWordsCount = service.GetBannedWordsCount();
 
             //Assert
             Assert.AreEqual(BAD_WORDS_COUNT_BY_DEFAULT, bannedWordsCount);
@@ -35,7 +35,7 @@ namespace ContentConsole.Test.Unit.Tests
             service.SetBannedWordsFromFile(path);
 
             //Act
-            int bannedWordsCount = service.GetBannedWordsCount(CONTENT);
+            int bannedWordsCount = service.GetBannedWordsCount();
 
             //Assert
             Assert.AreEqual(BAD_WORDS_COUNT_WITH_FILE_SETTING, bannedWordsCount);
@@ -52,6 +52,32 @@ namespace ContentConsole.Test.Unit.Tests
 
             //Assert
             Assert.AreEqual(FILTERED_CONTENT, filteredContent);
+        }
+
+        [Test]
+        public void BannedWordService_ScanContent_WhithFiltration_Test()
+        {
+            //Arrange
+            IBannedWordService service = new BannedWordService();
+
+            //Act
+            string scannedText = service.ScanContent();
+
+            //Assert
+            Assert.AreEqual(FILTERED_CONTENT, scannedText);
+        }
+
+        [Test]
+        public void BannedWordService_ScanContent_WhithoutFiltration_Test()
+        {
+            //Arrange
+            IBannedWordService service = new BannedWordService();
+
+            //Act
+            string scannedText = service.ScanContent(false);
+
+            //Assert
+            Assert.AreEqual(CONTENT, scannedText);
         }
     }
 }

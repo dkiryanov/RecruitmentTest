@@ -7,6 +7,8 @@ namespace ContentStorage.Storage
     public static class WordStorage
     {
         private static Dictionary<string, string> _bannedWords;
+        private const char HASH_SYMBOL = '#';
+        private const string DEFAULT_HASH = "##";
 
         static WordStorage()
         {
@@ -37,13 +39,13 @@ namespace ContentStorage.Storage
         {
             if (word.Length <= 2)
             {
-                return "##";
+                return DEFAULT_HASH;
             }
 
             StringBuilder builder = new StringBuilder(word);
             for(int i = 1; i < builder.Length - 1; i++)
             {
-                builder.Replace(builder[i], '#');
+                builder.Replace(builder[i], HASH_SYMBOL);
             }
 
             return builder.ToString();
